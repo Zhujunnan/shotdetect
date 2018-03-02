@@ -18,6 +18,7 @@ detector.run()
 detector.pick_frame('/The_Dir_To_Save_Frames', "File_name_prefix")
 ```
 
-Then you can get files in the directory you have specified above. These files are in format 'File_name_prefix@starttime-endtime.jpg'.
+Then you can get files in the directory you have specified above. These files are in format 'File\_name\_prefix@starttime\-endtime.jpg'.
 
-If you use opencv2, then you must change cv2.cv.CV_CAP_PROP_FRAME_COUNT and cv2.cv.CV_CAP_PROP_FPS to cv2.CAP_PROP_FRAME_COUNT and cv2.CAP_PROP_FPS respectively.
+If you use opencv2, then you must change 'cv2.cv.CV\_CAP\_PROP\_FRAME\_COUNT' and 'cv2.cv.CV\_CAP\_PROP\_FPS' to 'cv2.CAP\_PROP\_FRAME\_COUNT' and 'cv2.CAP\_PROP\_FPS' respectively.
+
