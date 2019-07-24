@@ -65,7 +65,7 @@ class shotDetector(object):
             if self.frame_index[i + 1] - self.frame_index[i] < __min_duration__:
                 del tmp_idx[tmp_idx.index(self.frame_index[i])]
         self.frame_index = tmp_idx
-        print "special frames have {0}".format(len(self.frame_index))
+        print("special frames have {0}".format(len(self.frame_index)))
         
         if self.video_split_id and self.obj_path:
             # the real index start from 1 but time 0 and end add to it
@@ -92,8 +92,8 @@ class shotDetector(object):
                 if frame_middle_idx[i + 1] - frame_middle_idx[i] < __min_duration__:
                     del tmp_idx[tmp_idx.index(frame_middle_idx[i])]   
             frame_middle_idx = tmp_idx
-            print frame_middle_idx
-            print idx_new
+            print(frame_middle_idx)
+            print(idx_new)
             time_idx =[0.0]
             #frame_idx_tmp = map(lambda x : x + 1, frame_middle_idx)
             frame_idx_tmp = frame_middle_idx
@@ -109,20 +109,20 @@ class shotDetector(object):
 #            for element in frame_middle_idx:                    
 #                time_point = filter(lambda x: x > element, idx_new)[0]
 #                time_idx.append(time_point)
-            print time_idx
+            print(time_idx)
             time_idx_float = map(lambda x : x / self.fps, time_idx)
-            print time_idx_float
+            print(time_idx_float)
             timestamp_index = [(pair[0], pair[1]) for pair in zip(time_idx_float[:-1], time_idx_float[1:])]
                                
             for i, idx in enumerate(frame_middle_idx):
-                print i, idx
+                print(i, idx)
                 cv2.imwrite("{0}/{1}@@{2:.1f}-{3:.1f}.jpg".format(self.obj_path, self.video_split_id, timestamp_index[i][0], timestamp_index[i][1]), self.frames[idx - 1])
                 
                 
         else:
             for idx in self.frame_index:
                 if self.obj_path is None:
-                    print "hello"
+                    print("hello")
                     cv2.imwrite("{0}.jpg".format(idx + 1), self.frames[idx])
                     
                 else:
@@ -143,11 +143,11 @@ if __name__ == "__main__":
     detector = shotDetector(video_path)
     detector.run()
     detector.pick_frame("/Users/zhujunnan/Desktop/cvTEST/Result", "test_now")
-    print len(detector.scores)
-    print "frame_count is {0}".format(detector.frame_count)
+    print(len(detector.scores))
+    print("frame_count is {0}".format(detector.frame_count))
     
     average_frame_div = sum(detector.scores)/len(detector.scores)
-    print "average divergence = {0}".format(average_frame_div)
+    print("average divergence = {0}".format(average_frame_div))
     
     #special_frame = [sp_frame for sp_frame in detector.scores if sp_frame > average_frame_div * detector.factor]
     
