@@ -33,8 +33,8 @@ class shotDetector(object):
         self.frames = []
         hists = []
         cap = cv2.VideoCapture(self.video_path)
-        self.frame_count = cap.get(cv2.cv.CV_CAP_PROP_FRAME_COUNT)
-        self.fps = cap.get(cv2.cv.CV_CAP_PROP_FPS)
+        self.frame_count = cap.get(cv2.CAP_PROP_FRAME_COUNT)
+        self.fps = cap.get(cv2.CAP_PROP_FPS)
         while True:
             success, frame = cap.read()
             if not success:
@@ -55,17 +55,17 @@ class shotDetector(object):
         self.obj_path = obj_path
         self.frame_index = []
         self.video_split_id = video_split_id
-        for idx in xrange(len(self.scores)):
+        for idx in range(len(self.scores)):
             if self.scores[idx] > self.factor * average_frame_div:
                 self.frame_index.append(idx + 1)
                 
 
         tmp_idx = copy.copy(self.frame_index)
-        for i in xrange(0, len(self.frame_index) - 1):
+        for i in range(0, len(self.frame_index) - 1):
             if self.frame_index[i + 1] - self.frame_index[i] < __min_duration__:
                 del tmp_idx[tmp_idx.index(self.frame_index[i])]
         self.frame_index = tmp_idx
-        print "special frames have {0}".format(len(self.frame_index))
+        print("special frames have {0}".format(len(self.frame_index)))
         
         if self.video_split_id and self.obj_path:
             # the real index start from 1 but time 0 and end add to it
@@ -77,9 +77,9 @@ class shotDetector(object):
             
 
             
-            idx_new = map(lambda x : x + 1.0, idx_new)
+            idx_new = list(map(lambda x : x + 1.0, idx_new))
             frame_middle_idx = [math.ceil((pair[0] + pair[1])/2) for pair in zip(idx_new[:-1], idx_new[1:])]
-            frame_middle_idx = map(lambda x : int(x), frame_middle_idx)
+            frame_middle_idx = list(map(lambda x : int(x), frame_middle_idx))
             #time_idx = map(lambda x : x / self.fps, idx_new)
             #timestamp_index = [(pair[0], pair[1]) for pair in zip(time_idx[:-1], time_idx[1:])]
             #print idx_new
@@ -88,18 +88,18 @@ class shotDetector(object):
 
             os.system("mkdir -p {0}".format(self.obj_path))
             tmp_idx = copy.copy(frame_middle_idx)
-            for i in xrange(0, len(frame_middle_idx) - 1):
+            for i in range(0, len(frame_middle_idx) - 1):
                 if frame_middle_idx[i + 1] - frame_middle_idx[i] < __min_duration__:
                     del tmp_idx[tmp_idx.index(frame_middle_idx[i])]   
             frame_middle_idx = tmp_idx
-            print frame_middle_idx
-            print idx_new
+            print(frame_middle_idx)
+            print(idx_new)
             time_idx =[0.0]
             #frame_idx_tmp = map(lambda x : x + 1, frame_middle_idx)
             frame_idx_tmp = frame_middle_idx
             for i, element in enumerate(frame_idx_tmp):
                 if i < len(frame_idx_tmp) - 1:
-                    time_point = filter(lambda x : x <= frame_idx_tmp[i + 1], idx_new)[-1]
+                    time_point = list(filter(lambda x : x <= frame_idx_tmp[i + 1], idx_new))[-1]
                     if time_point not in time_idx:
                         time_idx.append(time_point)
                 #elif idx_new[-1] - time_idx[-1] < __min_duration__:
@@ -109,20 +109,20 @@ class shotDetector(object):
 #            for element in frame_middle_idx:                    
 #                time_point = filter(lambda x: x > element, idx_new)[0]
 #                time_idx.append(time_point)
-            print time_idx
-            time_idx_float = map(lambda x : x / self.fps, time_idx)
-            print time_idx_float
+            print(time_idx)
+            time_idx_float = list(map(lambda x : x / self.fps, time_idx))
+            print(time_idx_float)
             timestamp_index = [(pair[0], pair[1]) for pair in zip(time_idx_float[:-1], time_idx_float[1:])]
                                
             for i, idx in enumerate(frame_middle_idx):
-                print i, idx
+                print(i, idx)
                 cv2.imwrite("{0}/{1}@@{2:.1f}-{3:.1f}.jpg".format(self.obj_path, self.video_split_id, timestamp_index[i][0], timestamp_index[i][1]), self.frames[idx - 1])
                 
                 
         else:
             for idx in self.frame_index:
                 if self.obj_path is None:
-                    print "hello"
+                    print("hello")
                     cv2.imwrite("{0}.jpg".format(idx + 1), self.frames[idx])
                     
                 else:
@@ -143,11 +143,11 @@ if __name__ == "__main__":
     detector = shotDetector(video_path)
     detector.run()
     detector.pick_frame("/Users/zhujunnan/Desktop/cvTEST/Result", "test_now")
-    print len(detector.scores)
-    print "frame_count is {0}".format(detector.frame_count)
+    print(len(detector.scores))
+    print("frame_count is {0}".format(detector.frame_count))
     
     average_frame_div = sum(detector.scores)/len(detector.scores)
-    print "average divergence = {0}".format(average_frame_div)
+    print("average divergence = {0}".format(average_frame_div))
     
     #special_frame = [sp_frame for sp_frame in detector.scores if sp_frame > average_frame_div * detector.factor]
     
